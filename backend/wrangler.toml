@@ -1,0 +1,8 @@
+name = "guangyi-backend"
+main = "src/index.ts"
+compatibility_date = "2026-05-30"
+
+[[d1_databases]]
+binding = "guangyi"
+database_name = "guangyi"
+database_id = "c5b7cd9a-74ee-450c-81bd-b944965e7e7f"
