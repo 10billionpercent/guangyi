@@ -1,0 +1,32 @@
+name: Fetch Daily Search Gleam
+
+on:
+  schedule:
+    # Runs at 00:00 UTC every day
+    - cron: '0 0 * * *'
+  workflow_dispatch: # Allows you to run it manually for testing!
+
+jobs:
+  update-gleam:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Fetch and Save Gleam
+        run: |
+          # Fetch the JSON and save the DarkGleamUrl
+          URL=$(curl -s "https://www.bing.com/dsb?setmkt=en-US&dsbschemaversion=1.1" \
+            -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; Trident/7.0; rv:11.0; Cortana 1.15.0.0;10.0.22621.1265) like Gecko" \
+            | grep -oP '"DarkGleamUrl":"\K[^"]+')
+          
+          # Save it to a file
+          echo $URL > current_gleam.txt
+
+      - name: Commit and Push
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add current_gleam.txt
+          git commit -m "Update daily gleam URL" || echo "No changes to commit"
+          git push
