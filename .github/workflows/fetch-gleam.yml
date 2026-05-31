@@ -18,7 +18,7 @@ jobs:
       - name: Fetch and Save JSON
         run: |
           # Fetch the raw JSON from Microsoft
-          DATA=$(curl -s "https://www.bing.com/dsb?setmkt=en-US&dsbschemaversion=1.1" \
+          DATA=$(curl -s "https://www.bing.com/dsb?setmkt=en-CA&dsbschemaversion=1.1" \
             -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; Trident/7.0; rv:11.0; Cortana 1.15.0.0;10.0.22621.1265) like Gecko")
           
           # Extract specific fields and format as a JSON object
