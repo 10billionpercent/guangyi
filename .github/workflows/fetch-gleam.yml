@@ -2,7 +2,7 @@ name: Fetch Daily Search Gleam
 
 on:
   schedule:
-    - cron: '0 9 * * *'
+    - cron: '0 */6 * * *' # Runs at 00:00, 06:00, 12:00, 18:00
   workflow_dispatch:
 
 permissions:
@@ -21,7 +21,7 @@ jobs:
           DATA=$(curl -s "https://www.bing.com/dsb?setmkt=en-CA&dsbschemaversion=1.1" \
             -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; Trident/7.0; rv:11.0; Cortana 1.15.0.0;10.0.22621.1265) like Gecko")
           
-          # Extract specific fields and format as a JSON object
+          # Extract and validate
           echo "$DATA" | jq '{
             date: .ContentCollection[0].Date,
             text: .ContentCollection[0].Data[0].Cards[0].FieldsStore.GleamData.GleamText,
@@ -30,9 +30,14 @@ jobs:
             altText: .ContentCollection[0].Data[0].Cards[0].FieldsStore.GleamData.GleamAltText
           }' > daily_gleam.json
 
+          # Validate that we actually got data back
+          if [ "$(jq -r '.date' daily_gleam.json)" == "null" ]; then
+            echo "Error: Extraction failed, JSON is invalid or incomplete."
+            exit 1
+          fi
+
       - name: Send to Hono Backend
         run: |
-          # Send the generated JSON to your Hono API
           curl -X POST https://backend.10billionpercent.workers.dev/api/gleam \
             -H "Content-Type: application/json" \
             -d @daily_gleam.json
