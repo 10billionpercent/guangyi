@@ -8,9 +8,7 @@
   --text-secondary: #666666;
   --card-bg: #ffffff;
   --color-brand: #007bff;
-  --font:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
-    sans-serif;
+  --font: "Cause", sans-serif;
 }
 
 .dark {
@@ -24,7 +22,6 @@
   --background-light-gray: #333333;
 }
 
-/* --- Layout --- */
 body {
   margin: 0;
   padding: 0;
@@ -48,7 +45,12 @@ header {
   margin-bottom: 20px;
 }
 
-/* --- Gleam Display --- */
+.theme-switcher {
+  padding: 8px;
+  background: transparent;
+  border: none;
+}
+
 .gleam-large {
   display: block;
   width: 300px;
@@ -69,10 +71,9 @@ header {
   text-decoration: none;
   color: inherit;
   font-weight: 500;
-  margin-top: 20px;
+  max-width: fit-content;
 }
 
-/* --- Date Picker --- */
 .date-picker-wrapper {
   position: relative;
   width: 100%;

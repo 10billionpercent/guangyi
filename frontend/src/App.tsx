@@ -66,6 +66,26 @@ export default function App() {
       setMessage("Oops! No gleam found for this date.");
     }
   };
+
+  const handleDownload = async (url: string) => {
+    try {
+      const response = await fetch(url, { referrerPolicy: "no-referrer" });
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = `gleam-${date}.png`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error("Download failed ", error);
+      window.open(url, "_blank");
+    }
+  };
+
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchGleam(date);
@@ -75,7 +95,7 @@ export default function App() {
     <div className={`app-container ${isDark ? "dark" : "light"}`}>
       <header>
         <h1>Windows Search Bar Gleams for Your Art</h1>
-        <button onClick={() => setIsDark(!isDark)}>
+        <button onClick={() => setIsDark(!isDark)} className="theme-switcher">
           {isDark ? <Sun size={24} /> : <Moon size={24} />}
         </button>
       </header>
@@ -89,21 +109,22 @@ export default function App() {
         {message && <p className="msg">{message}</p>}
         {data && (
           <>
-            <h2>{data.text}</h2>
-            <img
-              key={isDark ? data.darkUrl : data.lightUrl} // Forces re-render on URL change
-              src={isDark ? data.darkUrl : data.lightUrl}
-              alt={data.altText}
-              className="gleam-large"
-              referrerPolicy="no-referrer" // This is the magic fix for Bing
-            />
-            <a
-              href={isDark ? data.darkUrl : data.lightUrl}
-              download
+            <h2>{data.text}</h2>{" "}
+            <button
+              onClick={() =>
+                handleDownload(isDark ? data.darkUrl : data.lightUrl)
+              }
               className="download-btn"
             >
               <Download size={20} /> Download Gleam
-            </a>
+            </button>
+            <img
+              key={isDark ? data.darkUrl : data.lightUrl}
+              src={isDark ? data.darkUrl : data.lightUrl}
+              alt={data.altText}
+              className="gleam-large"
+              referrerPolicy="no-referrer"
+            />
           </>
         )}
       </main>
