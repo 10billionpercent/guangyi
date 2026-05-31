@@ -178,7 +178,7 @@ header {
   border: none;
   border-radius: 8px;
   padding: 8px;
-  font-size: 13px;
+  font-size: 14px;
   cursor: pointer;
   color: var(--text-primary);
   text-align: center;
@@ -191,9 +191,9 @@ header {
 
 .dp-day.selected {
   background: var(--color-brand);
-  color: white;
+  color: var(--text-primary); 
+  font-weight: bold; 
 }
-
 .dp-empty-day {
   visibility: hidden;
 }

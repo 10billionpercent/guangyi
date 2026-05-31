@@ -6,13 +6,6 @@ interface DatePickerProps {
   placeholder?: string;
 }
 
-const formatDate = (date: Date): string => {
-  const day = String(date.getDate()).padStart(2, "0");
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const year = date.getFullYear();
-  return `${day}-${month}-${year}`;
-};
-
 const parseDate = (dateStr: string): Date | null => {
   if (dateStr.length === 8) {
     const y = parseInt(dateStr.substring(0, 4));
@@ -72,7 +65,7 @@ export default function DatePicker({
     const y = date.getFullYear();
     const m = String(date.getMonth() + 1).padStart(2, "0");
     const d = String(date.getDate()).padStart(2, "0");
-    onChange(`${y}${m}${d}`); 
+    onChange(`${y}${m}${d}`);
     setShowPicker(false);
   };
 
@@ -165,7 +158,8 @@ export default function DatePicker({
                 return <div key={`empty-${idx}`} className="dp-empty-day" />;
               }
               const date = new Date(tempYear, tempMonth, day);
-              const isSelected = value === formatDate(date);
+              const dateFormatted = `${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, "0")}${String(date.getDate()).padStart(2, "0")}`;
+              const isSelected = value === dateFormatted;
               return (
                 <button
                   key={idx}
