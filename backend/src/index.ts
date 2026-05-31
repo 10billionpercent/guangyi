@@ -12,12 +12,13 @@ app.post("/api/gleam", async (c) => {
   const { date, text, lightGleamUrl, darkGleamUrl, altText } =
     await c.req.json();
 
-  await c.env.guangyi
-    .prepare(
-      "INSERT INTO gleams (date, text, lightUrl, darkUrl, altText) VALUES (?, ?, ?, ?, ?)",
-    )
-    .bind(date, text, lightGleamUrl, darkGleamUrl, altText)
-    .run();
+await c.env.guangyi
+  .prepare(
+    "INSERT OR REPLACE INTO gleams (date, text, lightUrl, darkUrl, altText) VALUES (?, ?, ?, ?, ?)",
+  )
+  .bind(date, text, lightGleamUrl, darkGleamUrl, altText)
+  .run();
+
 
   return c.json({ status: "success" });
 });
