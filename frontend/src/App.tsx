@@ -38,13 +38,13 @@ export default function App() {
     const startDate = new Date(Date.UTC(2026, 4, 30));
 
     if (selectedDate > today) {
-      setMessage("This gleam doesn't exist yet!");
+      setMessage("That gleam hasn’t appeared yet ✨");
       setData(null);
       return;
     }
 
     if (selectedDate < startDate) {
-      setMessage("Eheh, this app stores only 30/05 onwards!");
+      setMessage("Eheh, the archive starts from 30/05 😈✨");
       setData(null);
       return;
     }
@@ -63,7 +63,7 @@ export default function App() {
       setData(result);
       setMessage("");
     } catch {
-      setMessage("Oops! No gleam found for this date.");
+      setMessage("No gleam surfaced for this day ✨");
     }
   };
 
@@ -94,7 +94,7 @@ export default function App() {
   return (
     <div className={`app-container ${isDark ? "dark" : "light"}`}>
       <header>
-        <h1>Windows Search Bar Gleams for Your Art</h1>
+        <h1>A little gleam for today’s art 🎨 ✨</h1>
         <button onClick={() => setIsDark(!isDark)} className="theme-switcher">
           {isDark ? <Sun size={24} /> : <Moon size={24} />}
         </button>
