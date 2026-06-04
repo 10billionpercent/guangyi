@@ -71,17 +71,70 @@ export default function App() {
     try {
       const response = await fetch(url, { referrerPolicy: "no-referrer" });
       const blob = await response.blob();
+
+      const img = new Image();
+      img.crossOrigin = "anonymous";
       const blobUrl = window.URL.createObjectURL(blob);
 
-      const a = document.createElement("a");
-      a.href = blobUrl;
-      a.download = `gleam-${date}.png`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      window.URL.revokeObjectURL(blobUrl);
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        if (ctx) {
+          const size = 2000;
+          canvas.width = size;
+          canvas.height = size;
+
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = "high";
+
+          ctx.fillStyle = isDark ? "#121212" : "#ffffff";
+          ctx.fillRect(0, 0, size, size);
+
+          // 1. Set independent maximum limits for width and height
+          // size * 0.95 allows it to use up to 1900px of the width (only 2.5% padding on each side!)
+          const maxWidth = size * 0.95;
+          const maxHeight = size * 0.8; // Keeps a safe 10% vertical padding so it doesn't hit top/bottom
+
+          // 2. Calculate scale factors based on independent limits
+          const scaleX = maxWidth / img.width;
+          const scaleY = maxHeight / img.height;
+
+          // Take the smaller scale to ensure the image maintains its aspect ratio perfectly
+          const scale = Math.min(scaleX, scaleY);
+
+          const scaledWidth = img.width * scale;
+          const scaledHeight = img.height * scale;
+
+          // 3. Center the graphic perfectly inside the 2000x2000 square
+          const xOffset = (size - scaledWidth) / 2;
+          const yOffset = (size - scaledHeight) / 2;
+
+          ctx.drawImage(img, xOffset, yOffset, scaledWidth, scaledHeight);
+
+          canvas.toBlob(
+            (finalBlob) => {
+              if (finalBlob) {
+                const finalUrl = window.URL.createObjectURL(finalBlob);
+                const a = document.createElement("a");
+                a.href = finalUrl;
+                a.download = `gleam-square-${date}.png`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(finalUrl);
+              }
+            },
+            "image/png",
+            1.0,
+          );
+        }
+        window.URL.revokeObjectURL(blobUrl);
+      };
+
+      img.src = blobUrl;
     } catch (error) {
-      console.error("Download failed ", error);
+      console.error("Square download failed ", error);
       window.open(url, "_blank");
     }
   };
